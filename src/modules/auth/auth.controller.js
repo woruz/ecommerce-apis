@@ -1,6 +1,7 @@
 const authService = require("./auth.service");
 const asyncHandler = require("../../middleware/asyncHandler");
 const { success } = require("../../utils/response");
+const { registerSchema } = require("./auth.schema");
 
 
 exports.register = asyncHandler(async (req, res) => {

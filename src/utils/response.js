@@ -25,6 +25,7 @@ const error = (res, message = "Internal Server Error", statusCode = 500, errors 
     status: "error",
     message,
   };
+  console.log({errors})
   if (errors) payload.errors = errors;
   res.status(statusCode).json(payload);
 };
