@@ -5,7 +5,6 @@ const { success } = require("../../utils/response");
 
 // POST /api/orders
 exports.placeOrder = asyncHandler(async (req, res) => {
-  const data = createOrderSchema.parse(req.body); // validate input with Zod
   const order = await orderService.placeOrder(req.user.userId, data);
   success(res, order, "Order placed successfully", 201);
 });
