@@ -273,7 +273,7 @@ and indexing decisions independent of ORM abstractions.
 ## 👨‍💻 Author
 
 **Backend Developer**
-Email: [sabil.danish1997@gmail.com](mailto:your-email@example.com)
+Email: [sabil.danish1997@gmail.com](mailto:sabil.danish1997@gmail.com)
 
 ---
 
