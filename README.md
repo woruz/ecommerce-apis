@@ -250,6 +250,26 @@ Basic unit/integration tests can be added using:
 
 ---
 
+## Database Schema
+
+The database schema is provided in `schema.sql`.
+
+It defines:
+- Users with role-based access (ADMIN / CUSTOMER)
+- Products & categories
+- Shopping carts (1 cart per user)
+- Orders with immutable order items
+
+Design considerations:
+- Normalized relational design
+- Snapshot pricing for orders
+- Indexes added for common query patterns
+
+Although Prisma ORM is used in the implementation, a raw SQL schema
+is provided to clearly demonstrate database design, relationships,
+and indexing decisions independent of ORM abstractions.
+
+
 ## 👨‍💻 Author
 
 **Backend Developer**
