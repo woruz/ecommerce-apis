@@ -1,14 +1,17 @@
 const { ZodError } = require("zod");
 
-const validate = (schema) => (req, res, next) => {
+// schemaType: 'body', 'query', or 'params'
+const validate = (schema, schemaType = "body") => (req, res, next) => {
+  console.log({schemaType})
   try {
-    schema.parse({
-      body: req.body,
-      query: req.query,
-      params: req.params,
-    });
+    const data = schemaType === "body" ? req.body
+               : schemaType === "query" ? req.query
+               : req.params;
+
+    schema.parse(data);
     next();
   } catch (err) {
+    console.log({err})
     if (err instanceof ZodError) {
       return res.status(400).json({
         status: "error",

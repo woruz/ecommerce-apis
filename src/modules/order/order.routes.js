@@ -2,7 +2,7 @@ const router = require("express").Router();
 const { authMiddleware, adminMiddleware } = require("../../middleware/auth");
 const validate = require("../../middleware/validate");
 const controller = require("./order.controller");
-const { createOrderSchema } = require("./order.schema");
+const { createOrderSchema, listOrderSchema } = require("./order.schema");
 
 // Customers place order from their cart
 router.post("/", authMiddleware, validate(createOrderSchema), controller.placeOrder);
@@ -11,6 +11,6 @@ router.post("/", authMiddleware, validate(createOrderSchema), controller.placeOr
 router.get("/me", authMiddleware, controller.myOrders);
 
 // Admin sees all orders
-router.get("/", authMiddleware, adminMiddleware, controller.allOrders);
+router.get("/", authMiddleware, adminMiddleware, validate(listOrderSchema, "query"), controller.allOrders);
 
 module.exports = router;

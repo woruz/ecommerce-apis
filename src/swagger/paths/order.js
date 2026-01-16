@@ -20,9 +20,18 @@
  *           schema:
  *             type: object
  *             properties:
- *               notes:
- *                 type: string
- *                 example: "Please deliver between 9-12 AM"
+ *               items:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   required: [productId, quantity]
+ *                   properties:
+ *                     productId:
+ *                       type: integer
+ *                       example: 1
+ *                     quantity:
+ *                       type: integer
+ *                       example: 3
  *     responses:
  *       201:
  *         description: Order placed successfully
@@ -30,7 +39,7 @@
  *         description: Cart empty or insufficient stock
  *       401:
  *         description: Unauthorized
- */
+ */  
 
 /**
  * @swagger

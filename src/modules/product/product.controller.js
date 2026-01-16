@@ -4,14 +4,12 @@ const asyncHandler = require("../../middleware/asyncHandler");
 const { success } = require("../../utils/response");
 
 exports.create = asyncHandler(async (req, res) => {
-  const data = productCreateSchema.parse(req.body); 
-  const product = await productService.createProduct(data);
+  const product = await productService.createProduct(req.body);
   success(res, product, "Product created successfully", 201);
 });
 
 exports.update = asyncHandler(async (req, res) => {
-  const data = productUpdateSchema.parse(req.body);
-  const product = await productService.updateProduct(Number(req.params.id), data);
+  const product = await productService.updateProduct(Number(req.params.id), req.body);
   success(res, product, "Product updated successfully");
 });
 

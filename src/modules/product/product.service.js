@@ -1,7 +1,14 @@
 const prisma = require("../../config/prisma");
 
 exports.createProduct = async (data) => {
-  return await prisma.product.create({ data });
+  try {
+    console.log({check: prisma})  
+    return await prisma.product.create({
+    data
+  });
+  } catch (error) {
+    console.log({error})
+  }
 };
 
 exports.updateProduct = async (id, data) => {

@@ -6,6 +6,20 @@ exports.createOrderSchema = z.object({
     z.object({
       productId: z.number(),
       quantity: z.number().min(1),
-    })
+    }).optional()
   ).optional()
+});
+
+exports.listOrderSchema = z.object({
+  page: z
+    .string()
+    .optional()
+    .transform(Number)
+    .refine((v) => !v || v > 0, { message: "page must be > 0" }),
+
+  limit: z
+    .string()
+    .optional()
+    .transform(Number)
+    .refine((v) => !v || v > 0, { message: "limit must be > 0" }),
 });

@@ -5,7 +5,7 @@ const { success } = require("../../utils/response");
 
 // POST /api/orders
 exports.placeOrder = asyncHandler(async (req, res) => {
-  const order = await orderService.placeOrder(req.user.userId, data);
+  const order = await orderService.placeOrder(req.user.userId, req.body);
   success(res, order, "Order placed successfully", 201);
 });
 
@@ -17,6 +17,10 @@ exports.myOrders = asyncHandler(async (req, res) => {
 
 // GET /api/orders (admin)
 exports.allOrders = asyncHandler(async (req, res) => {
-  const orders = await orderService.getAllOrders();
-  success(res, orders, "All orders retrieved successfully");
+  const page = Number(req.query.page || 1);
+  const limit = Number(req.query.limit || 10);
+
+  const result = await orderService.getAllOrders({ page, limit });
+
+  success(res, result, "Orders fetched successfully");
 });

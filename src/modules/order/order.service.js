@@ -14,12 +14,16 @@ exports.placeOrder = async (userId, orderData) => {
     }
 
     // Optional: override items from request body
-    const itemsToOrder = orderData.items ?? cart.items.map(i => ({
-      productId: i.productId,
-      quantity: i.quantity
-    }));
+    const itemsToOrder = orderData.items && orderData.items.length > 0
+      ? orderData.items
+      : cart.items.map(i => ({
+          productId: i.productId,
+          quantity: i.quantity,
+        }));  
 
     let totalPrice = 0;
+
+    const enrichedItems = [];
 
     // Check stock for all items
     for (const item of itemsToOrder) {
@@ -27,6 +31,11 @@ exports.placeOrder = async (userId, orderData) => {
       if (!product) throw new Error(`Product ${item.productId} not found`);
       if (product.stockQty < item.quantity) throw new Error(`Insufficient stock for ${product.name}`);
       totalPrice += product.price * item.quantity;
+      enrichedItems.push({
+        productId: item.productId,
+        quantity: item.quantity,
+        price: product.price,
+      });
     }
 
     // Create order
@@ -36,11 +45,7 @@ exports.placeOrder = async (userId, orderData) => {
         totalPrice,
         status: "PENDING",
         items: {
-          create: itemsToOrder.map((item) => ({
-            productId: item.productId,
-            quantity: item.quantity,
-            price: tx.product.findUnique({ where: { id: item.productId } }).price
-          })),
+          create: enrichedItems,
         },
       },
       include: { items: true },
@@ -59,7 +64,7 @@ exports.placeOrder = async (userId, orderData) => {
 
     return order;
   });
-};
+};  
 
 exports.getUserOrders = async (userId) => {
   return prisma.order.findMany({
@@ -69,9 +74,35 @@ exports.getUserOrders = async (userId) => {
   });
 };
 
-exports.getAllOrders = async () => {
-  return prisma.order.findMany({
-    include: { items: { include: { product: true } }, user: true },
-    orderBy: { createdAt: "desc" },
-  });
+exports.getAllOrders = async ({ page = 1, limit = 10 }) => {
+  const skip = (page - 1) * limit;
+
+  const [orders, total] = await prisma.$transaction([
+    prisma.order.findMany({
+      skip,
+      take: limit,
+      orderBy: { createdAt: "desc" },
+      include: {
+        user: {
+          select: { id: true, email: true, role: true },
+        },
+        items: {
+          include: {
+            product: {
+              select: { id: true, name: true },
+            },
+          },
+        },
+      },
+    }),
+    prisma.order.count(),
+  ]);
+
+  return {
+    items: orders,
+    page,
+    limit,
+    total,
+    totalPages: Math.ceil(total / limit),
+  };
 };

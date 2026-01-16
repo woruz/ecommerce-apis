@@ -7,7 +7,7 @@ const productCreateSchema = z.object({
   price: z.number().positive(),
   stockQty: z.number().int().nonnegative(),
   categoryId: z.number().optional(),
-});
+}); 
 
 const listProductsSchema = z.object({
   page: z
@@ -40,4 +40,11 @@ const listProductsSchema = z.object({
     .transform(Number)
     .refine((v) => !v || v >= 0, { message: "maxPrice must be >= 0" }),
 });
-module.exports = { productCreateSchema, listProductsSchema };
+
+const productParamsSchema = z.object({
+  id: z
+    .string()
+    .regex(/^\d+$/, { message: "id must be a positive integer" })
+    .transform(Number),
+});
+module.exports = { productCreateSchema, listProductsSchema, productParamsSchema };
